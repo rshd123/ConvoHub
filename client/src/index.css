@@ -1,0 +1,80 @@
+body{
+  background: url('../public/preview.jpg');
+}
+
+.Navbar {
+  text-align: center;
+}
+
+.icon {
+  font-size: 2rem;
+}
+
+.usernameForm{
+  text-align: center;
+  margin: 100px;
+}
+.userName{
+  height: 40px;
+  border: 1px solid black;
+  outline: 1px solid black;
+  border-radius: 10px;
+}
+.divContainer{
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.userList{
+  width: 155px;
+  border: 2px solid black;
+  border-radius: 10px;
+  padding: 0.5rem;
+}
+
+.container {
+  width: 800px;
+  border: 2px solid black;
+  border-radius: 10px;
+  padding: 0.5rem;
+  height: 60vh;
+  overflow-y:auto;
+}
+
+.msg {
+  border: 2px solid grey;
+  margin: 0.5rem 0rem 0.5rem 0rem;
+  padding: 0.5rem;
+}
+
+.left {
+  border-top-left-radius: 0px;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius:20px;
+  border-bottom-left-radius: 20px;
+  float: left;
+  clear: both;
+}
+
+.right {
+  border-top-left-radius: 20px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+  float: right;
+  clear: both;
+}
+
+.send-container{
+  margin: 0.5rem 0rem 0.5rem 0rem;
+  display: flex;
+  justify-content: center;
+}
+
+.messageInp{
+  width: 50%;
+}
+
+.leaveBtn{
+  margin-left: 10px !important;
+}
