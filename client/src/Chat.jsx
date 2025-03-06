@@ -8,13 +8,21 @@ const server_url = "http://localhost:3000";
 
 
 export default function Chat(){
+
+
     let socketRef = useRef();
     const [username, setUsername] = useState('');
     const [userAvailable, setUserAvailable] = useState(false);
-
     const [messages,setMessages] = useState([]);
-    const [message,setMessage] = useState([]);
+    const [message,setMessage] = useState('');
     const [users, setUsers] = useState([]);
+
+    useEffect(()=>{
+            setUsername(localStorage.getItem('username'));
+            setUserAvailable(true);
+            connectToSocketServer();
+    },[username])
+
 
     const connectToSocketServer = () => {
         socketRef.current = io.connect(server_url);
@@ -28,7 +36,7 @@ export default function Chat(){
             })
         })
 
-        socketRef.current.on('recieve', data=>{
+        socketRef.current.on('receive', data=>{
             setMessages((prevMessages)=>{
                 const updatedMessages = [...prevMessages, { user: data.user, message: data.message, position: 'left'}];
                 return updatedMessages;
@@ -56,13 +64,8 @@ export default function Chat(){
             })
         })
     };
-
-    const handleSubmit= (e)=>{
-        e.preventDefault();
-        localStorage.setItem('username', username);
-        setUserAvailable(true);
-        connectToSocketServer();
-    }    
+    
+    
 
 
     const handleLeaveChat = ()=>{
@@ -73,38 +76,17 @@ export default function Chat(){
             socketRef.current = null; // Cleanup the socket reference
         }
     }
-
-    const handleMessageSubmit = (e)=>{
+    const handleMessageSubmit = (e)=>{        
         e.preventDefault();
-        setMessages((prevMessages)=>{
+        if (!message.trim()) return; // Prevent empty messages
+        socketRef.current.emit('send',message);
+        setMessages((prevMessages)=>{            
             const updatedMessages = [...prevMessages, { user: username, message: message, position: 'right'}];
             return updatedMessages;
-        })
-        socketRef.current.emit('send',message);
+        });
         setMessage('');
     }
-
     return (
-        userAvailable === false ? 
-
-        <div>
-            <Navbar/>
-
-            <form onSubmit={handleSubmit} className="usernameForm">
-                <input 
-                    type="text" 
-                    placeholder="Enter username" 
-                    onChange={(e) => setUsername(e.target.value)}   
-                    value={username}
-                    className="userName"
-                />
-                <Button 
-                    className="usernameBtn"
-                    type="submit"
-                >Done</Button>
-            </form>
-        </div>
-        :
         <div>
             <Navbar/>
             <Messages messages={messages} users={users}/>
@@ -127,7 +109,7 @@ export default function Chat(){
                           padding: '0px',
                         },
                     }}
-                    onChange={(e)=> setMessage(e.target.value   )}
+                    onChange={(e)=> setMessage(e.target.value)}
                     value={message}
                     autoComplete="off"
                 />

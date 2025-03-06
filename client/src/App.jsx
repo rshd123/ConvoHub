@@ -1,13 +1,11 @@
 import { useState } from 'react'
-import './App.css'
-import Chat from './Chat'
-
+import Routes from './Routes.jsx'
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
   return (
     <>
-      <Chat/>
+      <Routes/>
     </>
   )
 }
