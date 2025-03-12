@@ -1,6 +1,6 @@
 import React,{useState,useEffect, useRef} from "react";
-import Navbar from "./Components/Navbar";
-import Messages from "./Components/Messages";
+import Navbar from "./Components/navbar/Navbar";
+import Messages from "./Components/messages/Messages";
 import { Button,TextField } from "@mui/material";
 import io from 'socket.io-client';
 
@@ -12,69 +12,73 @@ export default function Chat(){
 
     let socketRef = useRef();
     const [username, setUsername] = useState('');
-    const [userAvailable, setUserAvailable] = useState(false);
     const [messages,setMessages] = useState([]);
     const [message,setMessage] = useState('');
     const [users, setUsers] = useState([]);
 
-    useEffect(()=>{
-            setUsername(localStorage.getItem('username'));
-            setUserAvailable(true);
-            connectToSocketServer();
-    },[username])
 
+    useEffect(() => {
+        setUsername(localStorage.getItem('username'));
+        connectToSocketServer();
+        
+        return () => {
+            if (socketRef.current) {
+                socketRef.current.disconnect(); // Cleanup on unmount
+            }
+        };
+    }, []);  
+    
 
     const connectToSocketServer = () => {
+        if (socketRef.current) {
+            socketRef.current.disconnect();  // Ensure only one connection
+        }
+        
         socketRef.current = io.connect(server_url);
-
-        socketRef.current.emit('new-user-joined',username);
-
-        socketRef.current.on('user-joined', username=>{
-            setMessages((prevMessages)=>{
-                const updatedMessages = [...prevMessages,{ user: username, message: 'has joined the chat', position: 'left'}];
-                return updatedMessages;
-            })
-        })
-
-        socketRef.current.on('receive', data=>{
-            setMessages((prevMessages)=>{
-                const updatedMessages = [...prevMessages, { user: data.user, message: data.message, position: 'left'}];
-                return updatedMessages;
-            })
-        })
-        socketRef.current.on('usersList',users=>{
-            console.log(Object.values(users));
-            let userList = Object.values(users);
-            setUsers((prevUsers)=>{
-                // Merge new users into the current list and remove duplicates
-                const updatedUsers = Array.from(new Set([...prevUsers, ...userList]));
-                return updatedUsers;  
-            })
-        })
-
-        socketRef.current.on('user-left', user=>{
-            console.log(users);
-            setMessages((prevMessages)=>{
-                const updatedMessages = [...prevMessages, { user: user, message: 'left the chat', position: 'left'}];
-                return updatedMessages;
-            })
-            setUsers((prevUsers)=>{
-                const updatedUsers = prevUsers.filter((username)=> username != user);
-                return updatedUsers;
-            })
-        })
+        socketRef.current.emit('new-user-joined', username);
+        
+        // Remove any previous listeners before adding new ones
+        socketRef.current.off('user-joined');
+        socketRef.current.off('receive');
+        socketRef.current.off('usersList');
+        socketRef.current.off('user-left');
+    
+        socketRef.current.on('user-joined', (username) => {
+            setMessages(prevMessages => [
+                ...prevMessages, { user: username, message: 'has joined the chat', position: 'left' }
+            ]);
+        });
+    
+        socketRef.current.on('receive', (data) => {
+            setMessages(prevMessages => [
+                ...prevMessages, { user: data.user, message: data.message, position: 'left' }
+            ]);
+        });
+    
+        socketRef.current.on('usersList', (users) => {
+            setUsers(Object.values(users));
+        });
+    
+        socketRef.current.on('user-left', (user) => {
+            setMessages(prevMessages => [
+                ...prevMessages, { user: user, message: 'left the chat', position: 'left' }
+            ]);
+            setUsers(prevUsers => prevUsers.filter((username) => username !== user));
+        });
     };
     
     
 
 
     const handleLeaveChat = ()=>{
-        setUserAvailable(false);
         localStorage.removeItem('username');
+        localStorage.removeItem("userId");
+        localStorage.removeItem("token");
         if (socketRef.current) {
             socketRef.current.disconnect();
             socketRef.current = null; // Cleanup the socket reference
         }
+        window.location.reload();
     }
     const handleMessageSubmit = (e)=>{        
         e.preventDefault();

@@ -6,7 +6,6 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 dotenv.config();
 
-
 import userRouter from './Routes/user.router.js';
 import bodyParser from 'body-parser';
 
@@ -14,57 +13,66 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: '*',
   },
 });
 
-const users = {};
+const users = new Map(); // Better performance than an object
 
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use("/", userRouter);
+app.use('/', userRouter);
 
 const dbConnect = async () => {
-  await mongoose.connect(process.env.MONGO_URL);
+  try {
+    await mongoose.connect(process.env.MONGO_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('✅ Database Connected');
+  } catch (err) {
+    console.error('❌ Cannot connect to database:', err);
+    process.exit(1); // Stop the server if DB fails
+  }
 };
-dbConnect()
-  .then(() => {
-    console.log('Database Connected');
-  })
-  .catch((err) => {
-    console.log('Cannot connect to database' + err);
-  })
 
+dbConnect();
 
 io.on('connection', (socket) => {
-
   socket.on('new-user-joined', (username) => {
     if (username) {
-      console.log(`${username} connected`);
-      users[socket.id] = username;
+      console.log(`👤 ${username} connected`);
+      users.set(socket.id, username);
       socket.broadcast.emit('user-joined', username);
-
-      socket.broadcast.emit('usersList', users);
-      socket.emit('usersList', users);
+      
+      // Send updated user list
+      io.emit('usersList', Array.from(users.values()));
     }
   });
 
   socket.on('send', (message) => {
-    socket.broadcast.emit('receive', { message: message, user: users[socket.id] });
+    if (users.has(socket.id)) {
+      socket.broadcast.emit('receive', {
+        message,
+        user: users.get(socket.id),
+      });
+    }
   });
 
   socket.on('disconnect', () => {
-    if (users[socket.id]) {
-      console.log(`${users[socket.id]} left`);
-      socket.broadcast.emit('user-left', users[socket.id]);
-      delete users[socket.id];
+    if (users.has(socket.id)) {
+      console.log(`❌ ${users.get(socket.id)} left`);
+      socket.broadcast.emit('user-left', users.get(socket.id));
+      users.delete(socket.id);
+      
+      // Send updated user list
+      io.emit('usersList', Array.from(users.values()));
     }
   });
 });
 
-// Start the Express server
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(`Server running on....`);
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
