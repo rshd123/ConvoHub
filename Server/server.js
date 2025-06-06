@@ -11,6 +11,12 @@ import bodyParser from 'body-parser';
 
 const app = express();
 const server = createServer(app);
+
+const PORT = 3000;
+server.listen(PORT, () => {
+  console.log(`🚀 Server running on ${PORT}`);
+});
+
 const io = new Server(server, {
   cors: {
     origin: '*',
@@ -26,14 +32,12 @@ app.use('/', userRouter);
 
 const dbConnect = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    
+    await mongoose.connect(process.env.MONGO_URL, {});
     console.log('✅ Database Connected');
   } catch (err) {
     console.error('❌ Cannot connect to database:', err);
-    process.exit(1); // Stop the server if DB fails
+    process.exit(1); 
   }
 };
 
@@ -70,9 +74,4 @@ io.on('connection', (socket) => {
       io.emit('usersList', Array.from(users.values()));
     }
   });
-});
-
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
