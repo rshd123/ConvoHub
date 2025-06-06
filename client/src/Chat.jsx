@@ -7,7 +7,8 @@ import io from 'socket.io-client';
 const server_url = "http://localhost:3000";
 
 
-export default function Chat(){
+export default function 
+Chat(){
 
 
     let socketRef = useRef();
@@ -26,7 +27,7 @@ export default function Chat(){
                 socketRef.current.disconnect(); // Cleanup on unmount
             }
         };
-    }, []);  
+    }, [username]);  
     
 
     const connectToSocketServer = () => {
