@@ -19,7 +19,7 @@ server.listen(PORT, () => {
 
 const io = new Server(server, {
   cors: {
-    origin: '*',
+    origin: 'https://convohub-k3t8.onrender.com',
     methods: ["GET", "POST"],
     credentials: true,
   },
