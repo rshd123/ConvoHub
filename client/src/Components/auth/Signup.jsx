@@ -20,7 +20,7 @@ export default function SignUp() {
         e.preventDefault();
         try {
             setLoading(true);
-            const response = await axios.post(`http:localhost:3000/user/signup`,{
+            const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/user/signup`,{
                 username,
                 email,
                 password

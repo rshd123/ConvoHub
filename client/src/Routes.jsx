@@ -1,6 +1,6 @@
 import React,{useEffect} from "react";
 import {useNavigate, useRoutes} from "react-router-dom";
-import Chat from './Chat.jsx';
+import {Chat} from './Chat.jsx';
 import {useAuth} from './AuthContext.jsx';
 import Login from "./Components/auth/Login.jsx";
 import Signup from "./Components/auth/Signup.jsx";

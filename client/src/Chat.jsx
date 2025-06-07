@@ -4,10 +4,11 @@ import Messages from "./Components/messages/Messages";
 import { Button,TextField } from "@mui/material";
 import io from 'socket.io-client';
 
-const server_url = "http://localhost:3000";
+const server_url = import.meta.env.VITE_SERVER_URL;
+// console.log("Server URL:", server_url);
 
 
-export default function 
+export function 
 Chat(){
 
 
