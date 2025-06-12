@@ -5,7 +5,7 @@ import axios from "axios";
 // dotenv.config();
 import { PageHeader } from "@primer/react";
 import { Box, Button } from "@primer/react";
-
+import Navbar from "../navbar/Navbar.jsx";
 import { Link } from "react-router-dom";
 
 export default function Login() {
@@ -21,6 +21,7 @@ export default function Login() {
 
     const handleLogin = async (e)=>{
         e.preventDefault();
+        setLoading(true);
         try {
             const res = await axios.post(`${import.meta.env.VITE_SERVER_URL}/user/login`,{
                 username: username,
@@ -32,7 +33,7 @@ export default function Login() {
             localStorage.setItem("username",res.data.username);
 
             setCurrentUser(res.data.userId);
-            setLoading(true);
+            
 
             window.location.href = "/";
             console.log(res);
@@ -44,7 +45,7 @@ export default function Login() {
     }
     return (
         <div className="login-wrapper">
-
+            <Navbar />
             <div className="login-box-wrapper">
                 <div className="login-heading">
                     <Box sx={{ padding: 1 }}>

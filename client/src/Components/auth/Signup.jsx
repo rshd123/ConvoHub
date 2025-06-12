@@ -4,6 +4,7 @@ import axios from "axios";
 import { PageHeader } from "@primer/react";
 import { Box, Button } from "@primer/react";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../navbar/Navbar.jsx";
 
 import { Link } from "react-router-dom";
 // import dotenv from "dotenv";
@@ -18,6 +19,7 @@ export default function SignUp() {
     const [error, setError] = useState(null);
     const handleSignup = async (e)=>{
         e.preventDefault();
+        setLoading(true);
         try {
             setLoading(true);
             const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/user/signup`,{
@@ -43,6 +45,7 @@ export default function SignUp() {
     }
     return (
         <div className="login-wrapper">
+            <Navbar />
             <div className="login-box-wrapper">
                 <div className="login-heading">
                     {error && <p className="error" style={{color:'red'}}>{error}</p>}

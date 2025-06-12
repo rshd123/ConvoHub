@@ -20,6 +20,7 @@ server.listen(PORT, () => {
 const io = new Server(server, {
   cors: {
     origin: 'https://convohub-k3t8.onrender.com',
+    // origin: 'http://localhost:5173', 
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -46,6 +47,15 @@ const dbConnect = async () => {
 dbConnect();
 
 io.on('connection', (socket) => {
+
+  socket.on('typing', (username) => {
+    socket.broadcast.emit('user-typing', username);
+  });
+
+  socket.on('stop-typing', (username) => {
+    socket.broadcast.emit('user-stop-typing', username);
+  });
+  
   socket.on('new-user-joined', (username) => {
     if (username) {
       console.log(`👤 ${username} connected`);
