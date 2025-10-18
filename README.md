@@ -4,17 +4,17 @@ A real-time chat application that allows users to join a chat room, send message
 
 **Features**
 
-🔄 Real-time Messaging: Send and receive messages instantly.
+ Real-time Messaging: Send and receive messages instantly.
 
-👤 User-Friendly Interface: Clean and intuitive UI for an enhanced chat experience.
+ User-Friendly Interface: Clean and intuitive UI for an enhanced chat experience.
 
-📜 User Management: Displays a list of active users in the chat room.
+ User Management: Displays a list of active users in the chat room.
 
-🔔 Join/Leave Notifications: Notify when users join or leave the chat room.
+ Join/Leave Notifications: Notify when users join or leave the chat room.
 
-🌐 Cross-Browser Compatibility: Works seamlessly on all modern browsers.
+ Cross-Browser Compatibility: Works seamlessly on all modern browsers.
 
-🛡️ Secure Connections: Data transfer over secure WebSocket connections.
+ Secure Connections: Data transfer over secure WebSocket connections.
 
 **Tech Stack:**
 
