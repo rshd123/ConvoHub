@@ -1,0 +1,27 @@
+# Environment variables (contains secrets)
+.env
+*.env
+.env.local
+.env.production
+
+# Node modules
+node_modules/
+*/node_modules/
+
+# Build outputs
+dist/
+build/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Uploads folder (if any)
+uploads/
