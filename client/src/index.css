@@ -80,9 +80,9 @@ body{
   justify-content: center;
 }
 
-.messageInp{
-  width: 50%;
-}
+/* .messageInp{
+  width: 45%;
+} */
 
 .leaveBtn{
   margin-left: 10px !important;

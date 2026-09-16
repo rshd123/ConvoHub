@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import TypingIndicator from "../TypingIndicator.jsx";
+import { Button } from "@mui/material";
+import { Download } from "@mui/icons-material";
 
 const Messages = ((props) => {
     const messagesEndRef = useRef(null);
@@ -37,6 +39,25 @@ const Messages = ((props) => {
                     {props.messages.map((data, index) => (
                         <div key={index} className={`msg ${data.position}`}>
                             <b>{data.user}</b>: {data.message}
+                            {/* Show download button if message has file data */}
+                            {data.fileData && props.onDownloadFile && (
+                                <div style={{ marginTop: '0.5rem' }}>
+                                    <Button
+                                        size="small"
+                                        variant="contained"
+                                        color="primary"
+                                        startIcon={<Download />}
+                                        onClick={() => props.onDownloadFile(data.fileData)}
+                                        style={{
+                                            borderRadius: '20px',
+                                            textTransform: 'none',
+                                            fontSize: '12px'
+                                        }}
+                                    >
+                                        Download
+                                    </Button>
+                                </div>
+                            )}
                         </div>
                     ))}
                     <TypingIndicator users={props.typingUsers || []} />
